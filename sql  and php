@@ -1,0 +1,96 @@
+CREATE DATABASE student_crud;
+USE student_crud;
+
+CREATE TABLE students (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100),
+  email VARCHAR(100),
+  age INT,
+  gpa VARCHAR(10),
+  degree VARCHAR(100)
+);
+
+#connect 
+<?php
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "student_crud";
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+?>
+
+#add
+<?php
+include 'connect.php';
+
+$name = $_POST['name'];
+$email = $_POST['email'];
+$age = $_POST['age'];
+$gpa = $_POST['gpa'];
+$degree = $_POST['degree'];
+
+$sql = "INSERT INTO students (name, email, age, gpa, degree) VALUES ('$name', '$email', '$age', '$gpa', '$degree')";
+if ($conn->query($sql) === TRUE) {
+    echo "Student added successfully";
+} else {
+    echo "Error: " . $conn->error;
+}
+$conn->close();
+?>
+
+#update 
+<?php
+include 'connect.php';
+
+$id = $_POST['id'];
+$name = $_POST['name'];
+$email = $_POST['email'];
+$age = $_POST['age'];
+$gpa = $_POST['gpa'];
+$degree = $_POST['degree'];
+
+$sql = "UPDATE students SET name='$name', email='$email', age='$age', gpa='$gpa', degree='$degree' WHERE id=$id";
+
+if ($conn->query($sql) === TRUE) {
+    echo "Student updated successfully";
+} else {
+    echo "Error: " . $conn->error;
+}
+$conn->close();
+?>
+
+#fetch
+?php
+include 'connect.php';
+
+$sql = "SELECT * FROM students";
+$result = $conn->query($sql);
+$students = [];
+
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $students[] = $row;
+    }
+}
+echo json_encode($students);
+$conn->close();
+?>
+
+#delete
+<?php
+include 'connect.php';
+
+$id = $_POST['id'];
+$sql = "DELETE FROM students WHERE id=$id";
+
+if ($conn->query($sql) === TRUE) {
+    echo "Student deleted successfully";
+} else {
+    echo "Error: " . $conn->error;
+}
+$conn->close();
+?>
